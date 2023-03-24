@@ -1,3 +1,4 @@
+from playsound import playsound
 from tkinter import *
 import time
 # ---------------------------- CONSTANTS ------------------------------- #
@@ -14,6 +15,16 @@ LONG_BREAK_MIN = 20
 repeats = 0
 program_timer = None
 
+# ---------------------------- SOUND ALERT ------------------------------- # 
+
+
+def play_pause():
+    playsound('sound/alert.mp3')
+
+
+def play_work():
+    playsound('sound/work.mp3')
+
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
@@ -24,6 +35,7 @@ def reset():
     window.after_cancel(program_timer)
     canvas.itemconfig(timer, text='00:00')
     label_check['text'] = ''
+    label_logo['text'] = 'Таймер'
 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
@@ -34,16 +46,19 @@ def start_timer():
     repeats += 1
     if repeats % 8 == 0:
         count_down(LONG_BREAK_MIN * 60)
+        play_pause()
         label_logo['text'] = 'Перерва'
         label_logo['fg'] = RED
         label_check['text'] = ''
     elif repeats % 2 == 0:
         label_check['text'] += '✔️'
         count_down(SHORT_BREAK_MIN * 60)
+        play_pause()
         label_logo['text'] = 'Перерва'
         label_logo['fg'] = PINK
     else:
         count_down(WORK_MIN * 60)
+        play_work()
         label_logo['text'] = 'Робота'
         label_logo['fg'] = GREEN
 
@@ -60,7 +75,7 @@ def count_down(count):
     canvas.itemconfig(timer, text=f'{min}:{sec}')
     if count > 0:
         global program_timer
-        program_timer = window.after(1000, count_down, count - 1)
+        program_timer = window.after(10, count_down, count - 1)
     else:
         start_timer()
 
